@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía de Malta en familia · 13–20 junio 2026</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css"/>
+<style>
+  :root{
+    --sea:#0a7ea4; --deep:#0a4d68; --turq:#05bfdb; --sand:#f4e9d8; --coral:#e8743b; --ink:#233640; --soft:#5a7281;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:var(--ink);background:#eef4f6;line-height:1.55;}
+  a{color:var(--sea);text-decoration:none;}
+  .wrap{max-width:1040px;margin:0 auto;background:#fff;}
+  /* HERO */
+  .hero{position:relative;height:360px;overflow:hidden;background:#0a4d68;color:#fff;}
+  .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;}
+  .hero .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,60,90,.25),rgba(10,60,90,.75));}
+  .hero .ht{position:absolute;left:0;right:0;bottom:34px;text-align:center;padding:0 16px;}
+  .hero h1{margin:0;font-size:54px;letter-spacing:3px;text-shadow:0 2px 12px rgba(0,0,0,.5);}
+  .hero .sub{letter-spacing:5px;text-transform:uppercase;font-size:15px;opacity:.95;}
+  .hero .dates{display:inline-block;margin-top:14px;padding:7px 20px;border:2px solid rgba(255,255,255,.85);border-radius:30px;letter-spacing:2px;}
+  .hero .who{margin-top:10px;font-size:13px;opacity:.9;letter-spacing:1px;}
+  /* SECTIONS */
+  section{padding:26px 30px;}
+  h2{color:var(--deep);font-size:25px;border-bottom:3px solid var(--turq);padding-bottom:8px;margin:0 0 16px;}
+  h2 .kk{font-size:13px;color:var(--coral);letter-spacing:2px;display:block;text-transform:uppercase;border:0;}
+  h3{color:var(--deep);margin:0 0 6px;}
+  .lead{color:#3d5663;}
+  .map{height:440px;border-radius:14px;overflow:hidden;border:1px solid #cfe0e6;box-shadow:0 2px 10px rgba(0,0,0,.06);margin:10px 0;}
+  .map.mini{height:300px;margin:14px 0 6px;}
+  .rtkey{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--soft);margin:6px 0 0;align-items:center;}
+  .rtkey b{display:inline-block;width:22px;height:4px;border-radius:3px;margin-right:6px;vertical-align:middle;}
+  .modes{font-size:13px;color:#3d5663;margin:4px 0 2px;}
+  .modes span{display:inline-block;background:#eef4f6;border:1px solid #dce6ea;border-radius:14px;padding:2px 9px;margin:2px 4px 2px 0;}
+  .modes .mb{border-color:#9fd3b3;background:#eaf7ef;}
+  .modes .mc{border-color:#f3c2a3;background:#fdefe6;}
+  .modes .mw{border-color:#bcd2f0;background:#eef4fd;}
+  .modes .mf{border-color:#a8e6f0;background:#e7fbff;}
+  .modes .mx{border-color:#d8dde0;background:#f1f3f4;}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--soft);margin:8px 0 0;}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+  /* day */
+  .day{border-top:1px solid #e8eef0;}
+  .daybar{display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,var(--deep),var(--sea));color:#fff;border-radius:12px;padding:12px 18px;margin-bottom:4px;}
+  .daybar .dn{font-size:22px;font-weight:700;line-height:1;white-space:nowrap;}
+  .daybar .dt{font-size:14px;opacity:.95;}
+  .daybar .tag{margin-left:auto;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:4px 10px;border-radius:20px;font-size:12px;white-space:nowrap;}
+  .steps{margin:10px 0;}
+  .step{display:flex;gap:12px;margin:6px 0;}
+  .step .h{flex:0 0 78px;font-weight:700;color:var(--sea);font-size:13px;}
+  .step .c{font-size:14.5px;}
+  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:12px 0 4px;}
+  figure.ph{margin:0;border-radius:12px;overflow:hidden;background:#dde7ea;border:1px solid #d4e0e4;}
+  figure.ph a{display:block;position:relative;}
+  figure.ph img{display:block;width:100%;height:165px;object-fit:cover;}
+  .ph-fallback{display:none;align-items:center;justify-content:center;height:180px;color:var(--soft);font-size:13px;text-align:center;padding:0 10px;background:repeating-linear-gradient(45deg,#e7eef1,#e7eef1 10px,#dfe8ec 10px,#dfe8ec 20px);}
+  figure.ph.broken img{display:none;}
+  figure.ph.broken .ph-fallback{display:flex;}
+  figure.ph figcaption{font-size:12.5px;color:#3d5663;padding:9px 12px;background:#fff;line-height:1.5;}
+  figure.ph figcaption b{color:var(--deep);}
+  figure.ph img{height:180px;}
+  figcaption .meta{display:block;margin-top:7px;padding-top:6px;border-top:1px dashed #d4dee2;font-size:11.5px;font-weight:600;color:#0a6e8c;}
+  figcaption .meta.cerr{color:#b13b37;}
+  .box{border-radius:10px;padding:11px 14px;margin:12px 0;font-size:14px;}
+  .tip{background:#fff4e8;border-left:5px solid var(--coral);}
+  .info{background:#e8f6fb;border-left:5px solid var(--turq);}
+  .warn{background:#fdecec;border-left:5px solid #d9534f;}
+  .energy{background:#eef7e6;border-left:5px solid #6aab38;}
+  .box b.bt{display:block;color:var(--deep);margin-bottom:2px;}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0;}
+  th{background:var(--deep);color:#fff;text-align:left;padding:8px 10px;}
+  td{padding:7px 10px;border-bottom:1px solid #e6dcc8;vertical-align:top;}
+  tr:nth-child(even) td{background:#f7f3ea;}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .card{background:var(--sand);border:1px solid #e6dcc8;border-radius:12px;padding:14px 16px;}
+  ul{margin:6px 0;padding-left:18px;}
+  li{margin:3px 0;font-size:14px;}
+  .foot{font-size:12px;color:var(--soft);padding:18px 30px 40px;border-top:1px solid #e8eef0;}
+  @media(max-width:620px){
+    section{padding:18px 15px;}
+    .hero{height:300px;}
+    .hero h1{font-size:38px;}
+    .hero .sub{font-size:12px;letter-spacing:3px;}
+    .cards{grid-template-columns:1fr;}
+    .daybar{flex-wrap:wrap;}
+    .daybar .tag{margin-left:0;margin-top:5px;}
+    .map{height:300px;}
+    .map.mini{height:250px;}
+    h2{font-size:21px;}
+    table{font-size:12px;}
+    th,td{padding:5px 6px;}
+    .step .h{flex-basis:62px;}
+    .modes span{font-size:12px;}
+    figcaption .meta{font-size:12px;}
+  }
+  .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .pin{width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.4);border:2px solid #fff;}
+  .pin span{transform:rotate(45deg);color:#fff;font-weight:700;font-size:12px;}
+  .dot{width:16px;height:16px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Panorama_of_Valletta.jpg?width=1400" alt="Valletta"
+         onerror="this.style.display='none'">
+    <div class="ov"></div>
+    <div class="ht">
+      <div class="sub">Guía de viaje en familia</div>
+      <h1>MALTA</h1>
+      <div class="dates">13 – 20 JUNIO 2026</div>
+      <div class="who">Malta · Gozo · Comino &nbsp;·&nbsp; 4 viajeros &nbsp;·&nbsp; 8 días / 7 noches</div>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <section>
+    <h2><span class="kk">Vuestro viaje</span>De un vistazo</h2>
+    <p class="lead">Versión interactiva de la guía, con <b>fotos reales</b> de cada lugar y <b>mapas navegables</b>. Empezáis en Valletta y el sur monumental; cruzáis en ferry a Gozo (donde tenéis el coche) para recorrerla a fondo; y, a la vuelta, exprimís la isla principal antes de la última noche en Sliema.</p>
+    <table>
+      <tr><th>Reserva</th><th>Fechas / horas</th><th>Detalle</th></tr>
+      <tr><td><b>Vuelo ida</b> · Ryanair</td><td>Sáb 13 jun · 17:35 → 20:15</td><td>Madrid (MAD) → Malta (MLA), directo</td></tr>
+      <tr><td><b>Apartamento</b> cerca de Valletta</td><td>13 – 16 jun</td><td>Entrada 15:00 · Salida 11:00</td></tr>
+      <tr><td><b>Coche</b> · Hyundai i20</td><td>Recogida 16 · 9:30 — Devolución 19 · 9:00</td><td><b>Recogida y entrega en Gozo</b></td></tr>
+      <tr><td><b>B&amp;B</b> The Cloisters</td><td>16 – 19 jun</td><td>Xagħra (Gozo)</td></tr>
+      <tr><td><b>Hotel</b> Palazzo Violetta</td><td>19 – 20 jun</td><td>Sliema</td></tr>
+      <tr><td><b>Vuelo vuelta</b> · Ryanair</td><td>Sáb 20 jun · 14:10 → 17:00</td><td>Malta (MLA) → Madrid (MAD), directo</td></tr>
+    </table>
+  </section>
+
+  <!-- MAP TRIP -->
+  <section>
+    <h2><span class="kk">Mapa interactivo</span>Todo el viaje</h2>
+    <p class="lead">Mapa real (OpenStreetMap): haz zoom y pulsa cada punto para ver su nombre. Las dos islas están a un corto ferry.</p>
+    <div id="mapTrip" class="map"></div>
+    <div class="legend">
+      <span><i style="background:#e8743b"></i>Alojamientos</span>
+      <span><i style="background:#0a4d68"></i>Monumentos / pueblos</span>
+      <span><i style="background:#05bfdb"></i>Playas y baños</span>
+      <span><i style="background:#6aab38"></i>Ferris / accesos</span>
+    </div>
+  </section>
+
+  <!-- MAP VALLETTA -->
+  <section>
+    <h2><span class="kk">Mapa interactivo</span>Valletta paso a paso</h2>
+    <p class="lead">Los 10 imprescindibles de la capital, ubicados sobre el mapa real. Se cruza a pie en 15–20 min de la Puerta de la Ciudad (1) al Fort St Elmo (10).</p>
+    <div id="mapValletta" class="map"></div>
+    <div class="cards" style="margin-top:10px">
+      <div class="card"><ul style="list-style:none;padding-left:0;margin:0">
+        <li><b>1.</b> Fontana del Tritón (entrada)</li>
+        <li><b>2.</b> Puerta de la Ciudad (City Gate)</li>
+        <li><b>3.</b> Concatedral de San Juan (Caravaggio)</li>
+        <li><b>4.</b> Palacio del Gran Maestre</li>
+        <li><b>5.</b> Museo Nacional de Arqueología</li>
+      </ul></div>
+      <div class="card"><ul style="list-style:none;padding-left:0;margin:0">
+        <li><b>6.</b> Teatro Manoel</li>
+        <li><b>7.</b> Upper Barrakka Gardens + cañón (12:00)</li>
+        <li><b>8.</b> Casa Rocca Piccola</li>
+        <li><b>9.</b> Lower Barrakka + Campana del Asedio</li>
+        <li><b>10.</b> Fort St Elmo + Museo de la Guerra</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ITINERARIO -->
+  <section>
+    <h2><span class="kk">Día a día</span>Rutas y transporte</h2>
+    <p class="lead">Cada día acaba con su <b>minimapa interactivo</b>: los puntos van numerados en el orden recomendado y la línea marca la ruta. El <b>color de cada tramo</b> indica el transporte sugerido.</p>
+    <div class="rtkey">
+      <span><b style="background:#2e9e5b"></b>Autobús</span>
+      <span><b style="background:#e8743b"></b>Taxi / Bolt</span>
+      <span><b style="background:#3a7bd5"></b>A pie</span>
+      <span><b style="background:#05bfdb"></b>Ferry / barco</span>
+      <span><b style="background:#8a8f98"></b>Coche de alquiler</span>
+    </div>
+  </section>
+
+  <!-- DÍA 1 -->
+  <section class="day">
+    <div class="daybar"><div class="dn">Sáb 13</div><div class="dt">Llegada a Malta</div><div class="tag">Sin coche</div></div>
+    <div class="steps">
+      <div class="step"><div class="h">20:15</div><div class="c"><b>Aterrizaje (MLA).</b> Taxi blanco o Bolt al apartamento (zona Valletta/Gżira), ~20–30 min.</div></div>
+      <div class="step"><div class="h">Noche</div><div class="c">Check-in y cena ligera. Un primer <i>ftira</i> o pizza, y a dormir pronto.</div></div>
+    </div>
+    <div class="box energy"><b class="bt">Si aún tenéis fuerzas…</b>Paseo nocturno por el Sliema Front o la Valletta Waterfront iluminada.</div>
+    <div id="m1" class="map mini"></div>
+    <div class="modes"><span class="mc">Aeropuerto → Apartamento: taxi / Bolt (~20–30 min)</span></div>
+  </section>
+
+  <!-- DÍA 2 -->
+  <section class="day">
+    <div class="daybar"><div class="dn">Dom 14</div><div class="dt">El sur monumental + Marsaxlokk</div><div class="tag">Bus / Bolt / tour</div></div>
+    <div class="steps">
+      <div class="step"><div class="h">Mañana</div><div class="c"><b>Marsaxlokk:</b> mercado dominical junto al puerto de barcas <i>luzzu</i> de colores.</div></div>
+      <div class="step"><div class="h">Media m.</div><div class="c"><b>St Peter's Pool:</b> piscina natural de roca con agua turquesa. Baño y saltos.</div></div>
+      <div class="step"><div class="h">Mediodía</div><div class="c"><b>Blue Grotto:</b> paseo en barca por cuevas marinas de azul intenso (desde Wied iż-Żurrieq).</div></div>
+      <div class="step"><div class="h">Tarde</div><div class="c"><b>Templos de Ħaġar Qim y Mnajdra:</b> megalitos UNESCO sobre el mar (una entrada para ambos).</div></div>
+    </div>
+    <div class="gal">
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:HDR_boats_(10042741435).jpg" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/HDR_boats_(10042741435).jpg?width=900" alt="Marsaxlokk" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Marsaxlokk.</b> Pueblo pesquero más famoso de Malta. Sus barcas <i>luzzu</i> llevan pintado a proa el <b>Ojo de Osiris/Horus</b>, herencia fenicia para alejar el mal. En su bahía se celebró la <b>Cumbre de Malta de 1989</b> (Bush–Gorbachov), que selló el fin de la Guerra Fría.<span class="meta">Duración ~1–1,5 h · Mercado dominical por la mañana (sin horario fijo)</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:St._Peter's_Pool,_Marsaxlokk.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/St._Peter's_Pool,_Marsaxlokk.JPG?width=900" alt="St Peter's Pool" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>St Peter's Pool.</b> Piscina natural excavada por el mar en losas de roca, cerca de Delimara. Agua cristalina y plataformas para <b>saltar al agua</b>. No hay servicios ni apenas sombra: llevad agua. Brilla espectacular al mediodía.<span class="meta">Duración ~1–2 h (baño) · Acceso libre, al aire libre</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Entrance_the_the_Blue_Grotto_IMG_0197.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Entrance_the_the_Blue_Grotto_IMG_0197.JPG?width=900" alt="Blue Grotto" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Blue Grotto.</b> Conjunto de cuevas marinas bajo los acantilados del sur. La luz rebota en el fondo de arena clara y tiñe el agua de un <b>azul fosforescente</b>, con destellos esmeralda de los minerales. Mejor luz <b>por la mañana (9–11 h)</b>. Enfrente asoma el islote de Filfla.<span class="meta">Duración ~45 min–1 h · Barcas ~9:00–17:00 (según el mar); mirador siempre abierto</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Hagar_Qim_northern_temple.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Hagar_Qim_northern_temple.JPG?width=900" alt="Hagar Qim" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Ħaġar Qim.</b> Templo megalítico de hace ~5.000 años, <b>más antiguo que Stonehenge y las pirámides</b>. Uno de sus bloques pesa unas 20 toneladas y una abertura se alinea con el <b>solsticio de verano</b>. Aquí aparecieron las célebres figuras de la "diosa madre". Hoy lo cubre una carpa protectora.<span class="meta">Duración ~1,5 h (los dos templos + centro) · Dom 14: 9:00–17:00 (última entrada 16:30)</span></figcaption></figure>
+    </div>
+    <div class="box energy"><b class="bt">Si aún tenéis fuerzas…</b>Atardecer en las <b>Dingli Cliffs</b> o cena de pescado en el puerto de Marsaxlokk.</div>
+    <div id="m2" class="map mini"></div>
+    <div class="modes">
+      <span class="mb">Base → Marsaxlokk: bus</span>
+      <span class="mc">Marsaxlokk → St Peter's Pool: taxi/Bolt</span>
+      <span class="mc">→ Blue Grotto: taxi/Bolt</span>
+      <span class="mw">Blue Grotto → Ħaġar Qim: a pie (~1,5 km)</span>
+      <span class="mc">Vuelta a base: bus o Bolt</span>
+    </div>
+    <div class="box info" style="margin-top:6px"><b class="bt">Consejo</b>Este recorrido del sur encadena mejor con <b>taxi/Bolt</b> entre paradas o con una <b>excursión organizada</b>; en bus es posible pero exige transbordos.</div>
+  </section>
+
+  <!-- DÍA 3 -->
+  <section class="day">
+    <div class="daybar"><div class="dn">Lun 15</div><div class="dt">Valletta y las Tres Ciudades</div><div class="tag">A pie · ferry</div></div>
+    <div class="steps">
+      <div class="step"><div class="h">Mañana</div><div class="c"><b>Upper Barrakka Gardens</b> y vistas al Gran Puerto. A las <b>12:00 cañonazo</b> de la Saluting Battery.</div></div>
+      <div class="step"><div class="h">Media m.</div><div class="c"><b>Concatedral de San Juan</b> (dos Caravaggio) y <b>Palacio del Gran Maestre</b>.</div></div>
+      <div class="step"><div class="h">Mediodía</div><div class="c">Republic Street, gelato y compras. (El <b>Fort St Elmo</b> cierra los lunes; lo dejamos para el viernes — ver aviso.)</div></div>
+      <div class="step"><div class="h">Tarde</div><div class="c"><b>Ferry a las Tres Ciudades</b> (Birgu/Vittoriosa): marina, callejuelas y panorámica de la muralla.</div></div>
+    </div>
+    <div class="gal">
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Malta_-_Valletta_-_Pjazza_Kastilja_-_Upper_Barrakka_Gardens_03_ies.jpg" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Malta_-_Valletta_-_Pjazza_Kastilja_-_Upper_Barrakka_Gardens_03_ies.jpg?width=900" alt="Upper Barrakka" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Upper Barrakka Gardens.</b> Jardín en lo más alto de las murallas, de 1661, creado para descanso de los caballeros italianos. Debajo, la <b>Saluting Battery</b> dispara un cañón cada día a las 12:00 (antes señalaba la hora a los barcos). Vistas inmejorables del Gran Puerto.<span class="meta">Duración ~30–45 min · Abierto a diario, gratis · Cañón a las 12:00</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Valletta_Ko-Kathedrale_St._John_Innen_Chor_1.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Valletta_Ko-Kathedrale_St._John_Innen_Chor_1.JPG?width=900" alt="St John's Co-Cathedral" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Concatedral de San Juan.</b> Sobria por fuera, un estallido <b>barroco</b> por dentro. El suelo lo forman ~400 lápidas de mármol de caballeros. Guarda <b>"La decapitación de San Juan" de Caravaggio</b>, su obra mayor y la <b>única que firmó</b>; el pintor llegó a ser caballero de la Orden… hasta que lo expulsaron.<span class="meta">Duración ~1–1,5 h · Lun 15: 9:00–16:45 (última entrada 16:00) · cerrado domingos</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Grandmaster's_Palace_courtyard_Valletta.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Grandmaster's_Palace_courtyard_Valletta.JPG?width=900" alt="Palacio del Gran Maestre" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Palacio del Gran Maestre.</b> Residencia de los Grandes Maestres de la Orden de San Juan y, después, de los gobernadores británicos. Destacan los <b>Salones de Estado</b> con tapices y la <b>Armería</b>, repleta de armaduras y armas de los caballeros.<span class="meta">Duración ~1–1,5 h · Lun 15: 10:00–18:00 (los Salones pueden cerrar por actos oficiales)</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Fort_St._Elmo;_Valletta,_Malta.jpg" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Fort_St._Elmo;_Valletta,_Malta.jpg?width=900" alt="Fort St Elmo" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Fort St Elmo.</b> Fortaleza en la punta de Valletta, clave en el <b>Gran Asedio de 1565</b>: cayó tras semanas de resistencia heroica, pero frenó a los otomanos. Alberga el <b>Museo Nacional de la Guerra</b> y la <b>Cruz de Jorge</b>, concedida a toda Malta por su valor en la 2ª GM (y presente en su bandera).<span class="meta cerr">Duración ~1,5 h · OJO, lun 15 CERRADO (abre mié–dom 10:00–18:00; vie hasta 21:00) → mejor visitarlo el viernes 19</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Vittoriosa-seafront-grand-harbour-marina.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Vittoriosa-seafront-grand-harbour-marina.JPG?width=900" alt="Vittoriosa" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Tres Ciudades (Vittoriosa).</b> El primer hogar de los caballeros, <b>anterior a Valletta</b>. Birgu resistió el Gran Asedio; hoy es una marina tranquila de yates y callejuelas, dominada por el imponente <b>Fort St Angelo</b>. Mucho más auténtica y sin multitudes.<span class="meta">Duración ~1,5–2 h · Pueblo y marina de acceso libre (sin horario)</span></figcaption></figure>
+    </div>
+    <div id="m3" class="map mini"></div>
+    <div class="modes">
+      <span class="mb">Base → Valletta: bus (o ferry desde Sliema)</span>
+      <span class="mw">Dentro de Valletta: a pie</span>
+      <span class="mf">Valletta → Tres Ciudades: ferry (Gran Puerto)</span>
+    </div>
+  </section>
+
+  <!-- DÍA 4 -->
+  <section class="day">
+    <div class="daybar"><div class="dn">Mar 16</div><div class="dt">Cruce a Gozo y primer día en la isla</div><div class="tag">Ferry pasajeros · Gozo</div></div>
+    <div class="steps">
+      <div class="step"><div class="h">Temprano</div><div class="c"><b>Check-out</b> y cruce a Gozo como pasajeros: <b>Gozo Fast Ferry</b> (Valletta → Mġarr, ~45 min, admite maletas).</div></div>
+      <div class="step"><div class="h">9:30</div><div class="c"><b>Recogéis el coche en Gozo.</b> Se conduce por la izquierda.</div></div>
+      <div class="step"><div class="h">Mañana</div><div class="c">Maletas en <b>The Cloisters B&amp;B</b> (Xagħra) y, al lado, los <b>Templos de Ġgantija</b> (más antiguos que las pirámides).</div></div>
+      <div class="step"><div class="h">Tarde</div><div class="c"><b>Ramla Bay</b> (arena rojiza) y el mirador de la <b>Cueva de Calypso</b>.</div></div>
+    </div>
+    <div class="gal">
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Ggantija,_Gozo_78.jpg" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Ggantija,_Gozo_78.jpg?width=900" alt="Ggantija" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Ġgantija.</b> Dos templos de hacia el 3600 a.C., de las <b>construcciones en pie más antiguas del mundo</b>. Su nombre viene de <i>ġgant</i> (gigante): la leyenda dice que los levantó una giganta que comía habas y miel mientras cargaba un niño. Patrimonio de la Humanidad.<span class="meta">Duración ~1–1,5 h · Mar 16: 9:00–17:00 (última entrada 16:30)</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Gozo_Ramla_Bay.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Gozo_Ramla_Bay.JPG?width=900" alt="Ramla Bay" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Ramla Bay.</b> La mayor playa de Gozo, de inconfundible <b>arena rojiza</b>. Bajo la arena hay restos de una <b>villa romana</b>. En lo alto está la <b>Cueva de Calypso</b>, que la <i>Odisea</i> sitúa como el lugar donde la ninfa retuvo a Ulises siete años.<span class="meta">Duración ~1,5–2 h · Playa de acceso libre</span></figcaption></figure>
+    </div>
+    <div class="box info"><b class="bt">Cómo cruzar con maletas</b>El Gozo Fast Ferry sale de Valletta cada poco (primer barco ~6:45). Lleváis el equipaje a Gozo y allí recogéis el coche.</div>
+    <div id="m4" class="map mini"></div>
+    <div class="modes">
+      <span class="mc">Base → Valletta: taxi/Bolt o bus</span>
+      <span class="mf">Valletta → Mġarr: Gozo Fast Ferry (pasajeros)</span>
+      <span class="mx">En Gozo: coche propio (B&amp;B, Ġgantija, Ramla)</span>
+    </div>
+  </section>
+
+  <!-- DÍA 5 -->
+  <section class="day">
+    <div class="daybar"><div class="dn">Mié 17</div><div class="dt">Mañana de buceo + corazón de Gozo</div><div class="tag">Buceo · playa</div></div>
+    <div class="steps">
+      <div class="step"><div class="h">Mañana</div><div class="c"><b>2 inmersiones</b> (papá) mientras la familia disfruta de la playa / <b>Salinas</b> de Marsalforn. (Centros y sitios abajo.)</div></div>
+      <div class="step"><div class="h">Tarde</div><div class="c"><b>Victoria y la Citadella:</b> ciudadela fortificada con murallas y vistas de toda la isla.</div></div>
+      <div class="step"><div class="h">Atardecer</div><div class="c"><b>Xlendi:</b> cala-pueblo de aguas turquesas para baño y cena junto al mar.</div></div>
+    </div>
+    <div class="gal">
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:St._Martin's_Demi-Bastion_-_Citadel,_Gozo.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/St._Martin's_Demi-Bastion_-_Citadel,_Gozo.JPG?width=900" alt="Citadella" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Citadella (Victoria).</b> Ciudadela fortificada sobre la capital de Gozo. Hasta 1637 la ley obligaba a los gozitanos a <b>pasar la noche dentro</b> por los ataques de corsarios. Su catedral tiene una <b>cúpula "falsa"</b>: nunca se construyó y la pintaron en trampantojo sobre el techo plano.<span class="meta">Duración ~1,5–2 h · Murallas de acceso libre; museos ~9:00–17:00</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Malta_Gozo_Xlendi_BW_2011-10-08_12-46-12.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Malta_Gozo_Xlendi_BW_2011-10-08_12-46-12.JPG?width=900" alt="Xlendi" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Xlendi.</b> Pueblo pesquero encajado en una estrecha cala tipo fiordo, de aguas transparentes ideales para snorkel. La vigila una <b>torre de 1650</b> y, cerca, viejas salinas talladas en la roca.<span class="meta">Duración ~1–2 h · Cala de acceso libre</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Gozo_Salt_Pans.jpg" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Gozo_Salt_Pans.jpg?width=900" alt="Salinas de Gozo" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Salinas de Xwejni.</b> Un <b>damero de balsas</b> talladas en la roca a lo largo de la costa, con unos <b>350 años</b> de antigüedad. Varias familias locales aún recogen aquí la sal marina cada verano. Espectacular con la luz baja.<span class="meta">Duración ~20–30 min · Junto a la carretera, acceso libre</span></figcaption></figure>
+    </div>
+    <div class="box energy"><b class="bt">Si aún tenéis fuerzas…</b>Las <b>Salinas</b> al atardecer y el santuario de <b>Ta' Pinu</b>, de camino.</div>
+    <div id="m5" class="map mini"></div>
+    <div class="modes"><span class="mx">Todo en coche</span> <span class="mc">El centro de buceo suele estar o recoger en Marsalforn</span></div>
+  </section>
+
+  <!-- DÍA 6 -->
+  <section class="day">
+    <div class="daybar"><div class="dn">Jue 18</div><div class="dt">Comino, la Laguna Azul y Dwejra</div><div class="tag">Barco · playa</div></div>
+    <div class="steps">
+      <div class="step"><div class="h">Mañana</div><div class="c"><b>Barco a Comino</b> desde Mġarr (~15 min): <b>Laguna Azul</b>, <b>Crystal Lagoon</b> y cuevas.</div></div>
+      <div class="step"><div class="h">Tarde</div><div class="c"><b>Dwejra:</b> Mar Interior (barca por la cueva, ~€4) y <b>Fungus Rock</b>. Atardecer de cine.</div></div>
+    </div>
+    <div class="gal">
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Blue_Lagoon_and_Cominotto.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blue_Lagoon_and_Cominotto.JPG?width=900" alt="Blue Lagoon Comino" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Laguna Azul (Comino).</b> Brazo de mar entre Comino y el islote de Cominotto, de un turquesa irreal sobre arena blanca. Comino está <b>casi deshabitada</b> (un puñado de residentes). Sus aguas y cuevas se han usado como <b>set de cine</b> (p. ej. <i>Troya</i>).<span class="meta">Duración media jornada (3–4 h) · Barcos por la mañana/tarde · pase QR en blcomino.com</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Fungus_Rock,_Dwejra_Bay,_Gozo.jpg" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Fungus_Rock,_Dwejra_Bay,_Gozo.jpg?width=900" alt="Dwejra" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Dwejra y Fungus Rock.</b> El Fungus Rock (la "Roca del General") debe su nombre a una <b>planta que los caballeros tenían por medicinal</b> y custodiaban con celo: el acceso estaba prohibido. Junto a él, el <b>Mar Interior</b> conecta con el mar abierto por un túnel de 80 m.<span class="meta">Duración ~1–1,5 h · Acceso libre; barca por el Mar Interior según el mar</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Azure_Window_2009.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Azure_Window_2009.JPG?width=900" alt="Azure Window" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Azure Window.</b> El icónico <b>arco natural</b> de Dwejra que <b>se derrumbó en una tormenta en marzo de 2017</b>. Fue escenario de <i>Juego de Tronos</i> (la boda de Daenerys) y <i>Furia de titanes</i>. Esta foto lo muestra cuando aún existía.<span class="meta">Ya no existe (se derrumbó en 2017); la zona de Dwejra sigue siendo visitable</span></figcaption></figure>
+    </div>
+    <div class="box warn"><b class="bt">Acceso a la Laguna Azul</b>Control de aforo con <b>código QR y franja horaria</b>: sacad el pase gratuito en <b>blcomino.com</b> antes de ir.</div>
+    <div class="box energy"><b class="bt">Si aún tenéis fuerzas…</b><b>Ta' Pinu</b> y el arco natural de <b>Wied il-Mielaħ</b>.</div>
+    <div class="gal">
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Malta_Gozo_Ta_Pinu_BW_2011-10-08_10-18-54.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Malta_Gozo_Ta_Pinu_BW_2011-10-08_10-18-54.JPG?width=900" alt="Ta Pinu" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Ta' Pinu.</b> Basílica de peregrinación cerca de Għarb. Su fama nació en 1883, cuando una vecina dijo <b>oír la voz</b> de la Virgen; desde entonces se le atribuyen favores y milagros. La han visitado varios papas.<span class="meta">Duración ~30–45 min · Abierta a diario (fuera de horarios de misa)</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Wied_il-Mielah_Window_close.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Wied_il-Mielah_Window_close.JPG?width=900" alt="Wied il-Mielah" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Wied il-Mielaħ.</b> Otro <b>arco natural</b> en la costa norte de Gozo, mucho menos turístico: la mejor alternativa al desaparecido Azure Window. Su nombre significa "valle de la sal".<span class="meta">Duración ~20–30 min · Mirador al aire libre, acceso libre</span></figcaption></figure>
+    </div>
+    <div id="m6" class="map mini"></div>
+    <div class="modes">
+      <span class="mf">Mġarr → Comino (Laguna Azul): barco, ida y vuelta</span>
+      <span class="mx">Ta' Pinu · Wied il-Mielaħ · Dwejra: coche</span>
+    </div>
+  </section>
+
+  <!-- DÍA 7 -->
+  <section class="day">
+    <div class="daybar"><div class="dn">Vie 19</div><div class="dt">Vuelta a Malta: Mdina, Mosta, Fort St Elmo y Sliema</div><div class="tag">Ferry pasajeros · sin coche</div></div>
+    <div class="steps">
+      <div class="step"><div class="h">9:00</div><div class="c"><b>Devolución del coche en Gozo</b> y check-out.</div></div>
+      <div class="step"><div class="h">Mañana</div><div class="c"><b>Ferry Mġarr → Valletta</b> (~45 min, con maletas). Dejáis equipaje en <b>Palazzo Violetta</b> (Sliema).</div></div>
+      <div class="step"><div class="h">Mediodía</div><div class="c"><b>Mdina, la "Ciudad del Silencio"</b> y <b>Rabat</b> (pastizzi, catacumbas). Bus directo desde Valletta.</div></div>
+      <div class="step"><div class="h">Tarde</div><div class="c"><b>Domo de Mosta</b> (la cúpula y la historia de la bomba de 1942).</div></div>
+      <div class="step"><div class="h">Tarde-noche</div><div class="c"><b>Fort St Elmo + Museo Nacional de la Guerra</b> en Valletta: los <b>viernes abre hasta las 21:00</b>, así recuperáis la visita que el lunes no era posible (la Cruz de Jorge y las salas del Gran Asedio).</div></div>
+      <div class="step"><div class="h">Noche</div><div class="c">Paseo por el <b>Sliema Front</b> hasta St Julian's y <b>Spinola Bay</b>; cena de despedida.</div></div>
+    </div>
+    <div class="gal">
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Malta_Mdina_BW_2011-10-05_13-41-26.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Malta_Mdina_BW_2011-10-05_13-41-26.JPG?width=900" alt="Mdina" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Mdina.</b> La antigua capital amurallada, la <b>"Ciudad del Silencio"</b>. Apenas viven ~300 personas, varias de familias nobles. Mezcla lo medieval y lo barroco; su <b>puerta</b> fue Desembarco del Rey en <i>Juego de Tronos</i>.<span class="meta">Duración ~1,5–2 h · Ciudad abierta siempre (la catedral tiene horario propio)</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:The_feast_of_St_Mary_in_Mosta,_Malta.jpg" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/The_feast_of_St_Mary_in_Mosta,_Malta.jpg?width=900" alt="Mosta" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Domo de Mosta.</b> Su <b>Rotunda</b> tiene una de las mayores cúpulas sin soporte de Europa. En <b>1942 una bomba alemana atravesó la cúpula</b> durante misa, con ~300 fieles dentro, y <b>no explotó</b>: se considera un milagro (hay una réplica expuesta).<span class="meta">Duración ~30–45 min · Vie 19: 9:30–18:00 (última entrada 17:30)</span></figcaption></figure>
+    </div>
+    <div class="box info"><b class="bt">Sin coche este día</b>En Malta os movéis en bus/Bolt. Mdina y Mosta están bien conectadas desde Valletta.</div>
+    <div class="box energy"><b class="bt">Si aún tenéis fuerzas…</b>Acuario Nacional (Qawra), crucero por el Gran Puerto, o <b>Popeye Village</b> en Bolt/taxi.</div>
+    <div class="gal">
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Popeye_Village_overview.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Popeye_Village_overview.JPG?width=900" alt="Popeye Village" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Popeye Village.</b> El <b>decorado de la película "Popeye"</b> (1980), protagonizada por Robin Williams, levantado en Anchor Bay. Hoy es un colorido parque-museo al aire libre con barquito y espectáculos.<span class="meta">Duración ~2–3 h · Vie 19: 9:30–17:30 (temporada abril–junio)</span></figcaption></figure>
+      <figure class="ph"><a href="https://commons.wikimedia.org/wiki/File:Dingli_Cliffs_2009.JPG" target="_blank"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Dingli_Cliffs_2009.JPG?width=900" alt="Dingli Cliffs" onerror="this.closest('.ph').classList.add('broken')"><span class="ph-fallback">Ver foto en Wikimedia Commons ↗</span></a><figcaption><b>Dingli Cliffs.</b> El <b>punto más alto de Malta</b> (~250 m sobre el mar), con una caída vertical impresionante. Lugar perfecto para el atardecer; arriba hay una diminuta capilla dedicada a Santa María Magdalena.<span class="meta">Duración ~30–45 min · Acantilado al aire libre, acceso libre</span></figcaption></figure>
+    </div>
+    <div id="m7" class="map mini"></div>
+    <div class="modes">
+      <span class="mf">Mġarr → Valletta: fast ferry</span>
+      <span class="mc">Valletta → Sliema: taxi/Bolt (con maletas)</span>
+      <span class="mb">Sliema → Mdina → Mosta: bus</span>
+      <span class="mc">Mosta → Fort St Elmo (Valletta): taxi/Bolt</span>
+      <span class="mc">Fort St Elmo → Sliema: taxi/Bolt o ferry</span>
+    </div>
+  </section>
+
+  <!-- DÍA 8 -->
+  <section class="day">
+    <div class="daybar"><div class="dn">Sáb 20</div><div class="dt">Regreso a Madrid</div><div class="tag">Vuelo</div></div>
+    <div class="steps">
+      <div class="step"><div class="h">Mañana</div><div class="c">Desayuno y paseo final por Sliema. Check-out.</div></div>
+      <div class="step"><div class="h">~11:30</div><div class="c">Taxi/Bolt al aeropuerto (~20 min). En el aeropuerto sobre las 12:00.</div></div>
+      <div class="step"><div class="h">14:10</div><div class="c"><b>Vuelo MLA → MAD.</b> Llegada a Madrid a las 17:00.</div></div>
+    </div>
+    <div id="m8" class="map mini"></div>
+    <div class="modes"><span class="mc">Sliema → Aeropuerto: taxi / Bolt (~20 min)</span></div>
+  </section>
+
+  <!-- BUCEO -->
+  <section>
+    <h2><span class="kk">Para papá</span>Buceo en Gozo</h2>
+    <p class="lead">Nivel Advanced (~100 inmersiones), buscando inmersiones espectaculares pero <b>sin complejidad técnica</b>. Reserva 1–2 días antes e indica que quieres inmersiones guiadas relajadas.</p>
+    <div class="cards">
+      <div class="card"><h3>Calypso Diving Centre</h3><p style="font-size:14px;margin:0">Marsalforn (~10 min de Xagħra). El más veterano de Gozo (1985), grupos pequeños.<br><a href="https://www.calypsodivers.com/" target="_blank">calypsodivers.com ↗</a></p></div>
+      <div class="card"><h3>Utina Diving</h3><p style="font-size:14px;margin:0">Xlendi. PADI 5★, cómodo si la familia se queda en la playa de Xlendi. Otra opción: Atlantis Gozo.</p></div>
+    </div>
+    <table>
+      <tr><th>Inmersión</th><th>Prof.</th><th>Por qué</th></tr>
+      <tr><td><b>Mġarr ix-Xini</b></td><td>12–18 m</td><td>Bahía resguardada, cavernas luminosas. Fácil y relajada.</td></tr>
+      <tr><td><b>Inland Sea &amp; Tunnel</b></td><td>5–30 m</td><td>Túnel de 80 m a una pared espectacular. Icónica. Ojo al tráfico de barcas.</td></tr>
+      <tr><td><b>Xlendi Reef &amp; Cave</b></td><td>5–20 m</td><td>Arrecife y cueva poco profundos, mucha vida.</td></tr>
+      <tr><td><b>Blue Hole</b></td><td>15–25 m</td><td>De los mejores buceos de costa de Europa. No técnica en perfil recreativo.</td></tr>
+    </table>
+    <div class="box warn"><b class="bt">Seguridad</b>Último buceo el miércoles 17 → más de 48 h antes del vuelo del sábado. Lleva certificación, logbook y seguro.</div>
+  </section>
+
+  <!-- INFO + GASTRO -->
+  <section>
+    <h2><span class="kk">Práctico</span>Lo que conviene saber</h2>
+    <div class="cards">
+      <div class="card"><h3>Datos clave</h3><ul>
+        <li>Moneda euro · idiomas maltés e <b>inglés</b></li>
+        <li>Enchufe <b>británico (tipo G)</b> · emergencias <b>112</b></li>
+        <li>Conducción por la <b>izquierda</b></li>
+        <li>Junio: 27–31 °C, mar ~23–24 °C. Sol fuerte: gorra y crema</li>
+        <li>Bus Tallinja €2,50 · app <b>Bolt</b> · taxi aeropuerto ~€20–25</li>
+      </ul></div>
+      <div class="card"><h3>Sabores</h3><ul>
+        <li><b>Pastizzi</b> (hojaldres) y <b>ftira</b> (pan relleno)</li>
+        <li><b>Fenek</b> (conejo), plato nacional</li>
+        <li><b>Gbejniet</b>: quesitos de Gozo</li>
+        <li>Helados y granizados por todas partes</li>
+        <li><b>Kinnie</b>: refresco maltés amargo-cítrico</li>
+      </ul></div>
+    </div>
+    <div class="box tip"><b class="bt">Reservar con antelación</b>Buceo, pase de la Laguna Azul (QR en blcomino.com) y mesas con vistas para cenar en verano.</div>
+  </section>
+
+  <div class="foot">
+    Guía orientativa para el viaje del 13–20 junio 2026. Horarios, precios y condiciones (ferris, museos, buceo, Laguna Azul, devolución del coche) pueden variar; conviene confirmarlos los días previos.<br>
+    Fotografías: <b>Wikimedia Commons</b>, bajo licencias libres (Creative Commons / dominio público). Cada foto enlaza a su página de origen, donde figura el autor y la licencia. Mapas: <b>© OpenStreetMap</b> contributors. Si alguna foto no carga, pulsa "Ver foto en Wikimedia Commons".
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.js"></script>
+<script>
+  function pin(n,color){return L.divIcon({className:'',html:'<div class="pin" style="background:'+color+'"><span>'+n+'</span></div>',iconSize:[26,26],iconAnchor:[13,26],popupAnchor:[0,-24]});}
+  function dot(color){return L.divIcon({className:'',html:'<div class="dot" style="background:'+color+'"></div>',iconSize:[16,16],iconAnchor:[8,8],popupAnchor:[0,-8]});}
+
+  // ---- TRIP MAP ----
+  var trip = L.map('mapTrip',{scrollWheelZoom:false,gestureHandling:true,gestureHandlingOptions:{text:{touch:"Desliza con dos dedos para mover el mapa",scroll:"Usa Ctrl + scroll para hacer zoom",scrollMac:"Usa ⌘ + scroll para hacer zoom"},duration:1400}});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(trip);
+  var C={lodge:'#e8743b',sight:'#0a4d68',beach:'#05bfdb',ferry:'#6aab38'};
+  var places=[
+    ['Apartamento (cerca de Valletta)',35.906,14.503,'lodge'],
+    ['The Cloisters B&B · Xagħra (Gozo)',36.0497,14.2680,'lodge'],
+    ['Palazzo Violetta · Sliema',35.9106,14.5019,'lodge'],
+    ['Valletta',35.8989,14.5146,'sight'],
+    ['Tres Ciudades (Birgu)',35.8889,14.5219,'sight'],
+    ['Mdina / Rabat',35.8859,14.4035,'sight'],
+    ['Mosta (Rotunda)',35.9097,14.4256,'sight'],
+    ['Marsaxlokk',35.8419,14.5436,'sight'],
+    ['St Peter\'s Pool',35.8330,14.5680,'beach'],
+    ['Blue Grotto',35.8206,14.4530,'sight'],
+    ['Ħaġar Qim / Mnajdra',35.8277,14.4422,'sight'],
+    ['Dingli Cliffs',35.8514,14.3818,'sight'],
+    ['Popeye Village',35.9540,14.3417,'sight'],
+    ['Mellieħa Bay',35.9700,14.3590,'beach'],
+    ['Ċirkewwa (ferry)',35.9860,14.3290,'ferry'],
+    ['Mġarr (ferry Gozo)',36.0265,14.2980,'ferry'],
+    ['Ġgantija',36.0473,14.2692,'sight'],
+    ['Ramla Bay',36.0570,14.2860,'beach'],
+    ['Victoria / Citadella',36.0443,14.2390,'sight'],
+    ['Xlendi',36.0287,14.2147,'beach'],
+    ['Dwejra',36.0530,14.1890,'sight'],
+    ['Ta\' Pinu',36.0610,14.2160,'sight'],
+    ['Wied il-Mielaħ',36.0790,14.2240,'sight'],
+    ['Salinas de Xwejni',36.0730,14.2470,'sight'],
+    ['Marsalforn (buceo)',36.0720,14.2590,'beach'],
+    ['Laguna Azul (Comino)',36.0153,14.3260,'beach']
+  ];
+  var grp=[];
+  places.forEach(function(p){
+    var m=L.marker([p[1],p[2]],{icon:dot(C[p[3]])}).addTo(trip).bindPopup('<b>'+p[0]+'</b>');
+    m.bindTooltip(p[0],{direction:'top',offset:[0,-6]});
+    grp.push([p[1],p[2]]);
+  });
+  trip.fitBounds(grp,{padding:[30,30]});
+
+  // ---- VALLETTA MAP ----
+  var val = L.map('mapValletta',{scrollWheelZoom:false,gestureHandling:true,gestureHandlingOptions:{text:{touch:"Desliza con dos dedos para mover el mapa",scroll:"Usa Ctrl + scroll para hacer zoom",scrollMac:"Usa ⌘ + scroll para hacer zoom"},duration:1400}});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:20,attribution:'© OpenStreetMap'}).addTo(val);
+  var O='#e8743b', B='#0a4d68';
+  var vpts=[
+    [1,'Fontana del Tritón',35.8949,14.5072,O],
+    [2,'Puerta de la Ciudad',35.8957,14.5066,B],
+    [3,'Concatedral de San Juan',35.8978,14.5125,B],
+    [4,'Palacio del Gran Maestre',35.8987,14.5141,B],
+    [5,'Museo Nac. de Arqueología',35.8967,14.5110,B],
+    [6,'Teatro Manoel',35.8993,14.5128,B],
+    [7,'Upper Barrakka Gardens',35.8939,14.5108,O],
+    [8,'Casa Rocca Piccola',35.8995,14.5152,B],
+    [9,'Lower Barrakka + Campana',35.8975,14.5170,B],
+    [10,'Fort St Elmo + Museo Guerra',35.9012,14.5183,O]
+  ];
+  var vb=[];
+  vpts.forEach(function(p){
+    L.marker([p[2],p[3]],{icon:pin(p[0],p[4])}).addTo(val).bindPopup('<b>'+p[0]+'. '+p[1]+'</b>');
+    vb.push([p[2],p[3]]);
+  });
+  val.fitBounds(vb,{padding:[40,40]});
+
+  // ---- PER-DAY ROUTE MAPS ----
+  var MODE={bus:'#2e9e5b',cab:'#e8743b',walk:'#3a7bd5',ferry:'#05bfdb',boat:'#05bfdb',car:'#8a8f98'};
+  // pts: [name, lat, lng, modeToNext]
+  function dayMap(id,pts){
+    var m=L.map(id,{scrollWheelZoom:false,gestureHandling:true,gestureHandlingOptions:{text:{touch:"Desliza con dos dedos para mover el mapa",scroll:"Usa Ctrl + scroll para hacer zoom",scrollMac:"Usa ⌘ + scroll para hacer zoom"},duration:1400}});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:20,attribution:'© OpenStreetMap'}).addTo(m);
+    var b=[];
+    for(var i=0;i<pts.length;i++){
+      var p=pts[i];
+      if(i<pts.length-1 && p[3]){
+        var n=pts[i+1];
+        var dash=(p[3]==='ferry'||p[3]==='boat')?'9 7':null;
+        L.polyline([[p[1],p[2]],[n[1],n[2]]],{color:MODE[p[3]]||'#888',weight:5,opacity:.85,dashArray:dash}).addTo(m);
+      }
+      L.marker([p[1],p[2]],{icon:pin(i+1,'#0a4d68')}).addTo(m).bindPopup('<b>'+(i+1)+'. '+p[0]+'</b>').bindTooltip((i+1)+'. '+p[0],{direction:'top',offset:[0,-22]});
+      b.push([p[1],p[2]]);
+    }
+    m.fitBounds(b,{padding:[40,40]});
+  }
+
+  dayMap('m1',[
+    ['Aeropuerto de Malta',35.8575,14.4775,'cab'],
+    ['Apartamento (zona Valletta)',35.9060,14.5030,null]
+  ]);
+  dayMap('m2',[
+    ['Marsaxlokk',35.8419,14.5436,'cab'],
+    ["St Peter's Pool",35.8330,14.5680,'cab'],
+    ['Blue Grotto',35.8206,14.4530,'walk'],
+    ['Ħaġar Qim / Mnajdra',35.8277,14.4422,null]
+  ]);
+  dayMap('m3',[
+    ['Upper Barrakka Gardens',35.8939,14.5108,'walk'],
+    ['Concatedral de San Juan',35.8978,14.5125,'walk'],
+    ['Palacio del Gran Maestre',35.8987,14.5141,'ferry'],
+    ['Tres Ciudades (Birgu)',35.8889,14.5219,null]
+  ]);
+  dayMap('m4',[
+    ['Valletta (terminal ferry)',35.8966,14.5118,'ferry'],
+    ['Mġarr (Gozo)',36.0265,14.2980,'car'],
+    ['The Cloisters B&B · Xagħra',36.0497,14.2680,'car'],
+    ['Templos de Ġgantija',36.0473,14.2692,'car'],
+    ['Ramla Bay',36.0570,14.2860,null]
+  ]);
+  dayMap('m5',[
+    ['Marsalforn / Salinas (buceo + playa)',36.0720,14.2590,'car'],
+    ['Victoria / Citadella',36.0443,14.2390,'car'],
+    ['Xlendi',36.0287,14.2147,null]
+  ]);
+  dayMap('m6',[
+    ['Mġarr (embarque)',36.0265,14.2980,'boat'],
+    ['Laguna Azul (Comino)',36.0153,14.3260,'car'],
+    ["Ta' Pinu",36.0610,14.2160,'car'],
+    ['Wied il-Mielaħ',36.0790,14.2240,'car'],
+    ['Dwejra',36.0530,14.1890,null]
+  ]);
+  dayMap('m7',[
+    ['Mġarr (Gozo)',36.0265,14.2980,'ferry'],
+    ['Valletta (terminal ferry)',35.8966,14.5118,'cab'],
+    ['Palazzo Violetta · Sliema',35.9106,14.5019,'bus'],
+    ['Mdina / Rabat',35.8859,14.4035,'bus'],
+    ['Mosta (Rotunda)',35.9097,14.4256,'cab'],
+    ['Fort St Elmo (Valletta)',35.9012,14.5183,'cab'],
+    ['Sliema / Spinola Bay',35.9180,14.4880,null]
+  ]);
+  dayMap('m8',[
+    ['Sliema (Palazzo Violetta)',35.9106,14.5019,'cab'],
+    ['Aeropuerto de Malta',35.8575,14.4775,null]
+  ]);
+</script>
+</body>
+</html>
